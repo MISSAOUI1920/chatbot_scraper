@@ -2,7 +2,11 @@ import streamlit as st
 import wikipediaapi
 
 # Initialize the Wikipedia API
-wiki_wiki = wikipediaapi.Wikipedia('en')
+wiki_wiki = wikipediaapi.Wikipedia(
+    user_agent='MyProjectName (merli@example.com)',
+    language='en',
+    extract_format=wikipediaapi.ExtractFormat.WIKI
+)
 
 # Streamlit app layout
 st.title("Chatbot with TinyLLaMA Model")
