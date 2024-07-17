@@ -7,7 +7,7 @@ import pytextrank
 import streamlit as st  # Import Streamlit
 
 # Load a spaCy model
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_sm")
 
 # Add PyTextRank to the spaCy pipeline
 nlp.add_pipe("textrank")
