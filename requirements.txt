@@ -1,4 +1,5 @@
 spacy
+wikipedia-api
 pytextrank
 streamlit
 requests
