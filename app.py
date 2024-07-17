@@ -5,21 +5,6 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 import spacy
 import pytextrank
-import subprocess
-
-# Check if NLTK punkt is downloaded, if not, download it
-try:
-    import nltk
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    subprocess.call("python -c \"import nltk; nltk.download('punkt')\"", shell=True)
-
-# Check if spaCy model is downloaded, if not, download it
-try:
-    import spacy
-    spacy.load('en_core_web_sm')
-except OSError:
-    subprocess.call("python -m spacy download en_core_web_sm", shell=True)
 
 # Load spaCy model and add PyTextRank to the pipeline
 nlp = spacy.load("en_core_web_sm")
