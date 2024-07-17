@@ -3,3 +3,5 @@ wikipedia-api
 sumy
 spacy
 pytextrank
+sys
+subprocess
