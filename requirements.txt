@@ -1,5 +1,5 @@
 wikipedia-api
 sumy
-spacy==3.5.2
+spacy
 pytextrank
 streamlit
