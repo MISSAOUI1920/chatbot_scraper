@@ -1,5 +1,5 @@
-wikipedia-api==0.5.4
-sumy==0.8.1
+wikipedia-api
+sumy
 spacy==3.5.2
-pytextrank==3.1.1
-streamlit==1.21.0
+pytextrank
+streamlit
