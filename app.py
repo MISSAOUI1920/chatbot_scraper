@@ -4,9 +4,8 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 import pytextrank
 import streamlit as st  # Import Streamlit
-
-import en_core_web_sm
-nlp = en_core_web_sm.load()
+import spacy
+nlp = spacy.load("en_core_web_lg")
 
 
 # Add PyTextRank to the spaCy pipeline
