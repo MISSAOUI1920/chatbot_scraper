@@ -2,3 +2,4 @@ wikipedia-api
 sumy
 pytextrank
 streamlit
+python -m spacy download en_core_web_lg
