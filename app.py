@@ -1,64 +1,51 @@
+import streamlit as st
 import wikipediaapi
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
-import streamlit as st
+import spacy
+import pytextrank
 
-# Initialize the Wikipedia API
+# Load spaCy model and add PyTextRank to the pipeline
+nlp = spacy.load("en_core_web_sm")
+nlp.add_pipe("textrank")
+
+# Initialize Wikipedia API
 wiki_wiki = wikipediaapi.Wikipedia(
     user_agent='MyProjectName (merlin@example.com)',
     language='en',
     extract_format=wikipediaapi.ExtractFormat.WIKI
 )
 
-# Streamlit app layout
-st.title("Chatbot with TinyLLaMA Model")
-st.write("Chat with the bot by entering your messages below.")
+def get_summary(input_text):
+    # Process the input text with spaCy and PyTextRank
+    doc = nlp(input_text)
+    inp = doc._.phrases[:10][0].text
 
-# Initialize the conversation history
-if 'history' not in st.session_state:
-    st.session_state['history'] = []
+    # Fetch the Wikipedia page
+    p_wiki = wiki_wiki.page(inp)
 
-# Text input widget for user message
-user_input = st.text_input("You:", "")
+    if p_wiki.exists():
+        # Prepare the text for summarization
+        text = p_wiki.text
+        parser = PlaintextParser.from_string(text, Tokenizer("english"))
+        summarizer = LsaSummarizer()
 
-# Generate response when the user submits a message
-if st.button("Send"):
-    if user_input:
-        # Append user message to history
-        st.session_state.history.append({"role": "user", "content": user_input})
-
-        # Create a formatted input for the model
-        conversation = ""
-        for message in st.session_state.history:
-            if message["role"] == "user":
-                conversation += f"User: {message['content']}\n"
-            else:
-                conversation += f"Chatbot: {message['content']}\n"
-
-        # Fetch Wikipedia page
-        p_wiki = wiki_wiki.page(user_input)
-        if p_wiki.exists():
-            text = p_wiki.text
-            parser = PlaintextParser.from_string(text, Tokenizer("english"))
-            summarizer = LsaSummarizer()
-
-            # Summarize the text
-            summary = summarizer(parser.document, 10)  # Adjust the number of sentences as needed
-
-            # Create summary text
-            intro_text = "\n".join([str(sentence) for sentence in summary])
-        else:
-            intro_text = "Page not found."
-        
-        # Append the generated response to history
-        st.session_state.history.append({"role": "chatbot", "content": intro_text})
+        # Summarize the text
+        summary = summarizer(parser.document, 4)  # Adjust the number of sentences as needed
+        return [str(sentence) for sentence in summary]
     else:
-        intro_text = "No key phrases found."
+        return ["The page does not exist."]
 
-# Display the conversation
-for message in st.session_state.history:
-    if message["role"] == "user":
-        st.write(f"**You:** {message['content']}")
+# Streamlit app
+st.title("Chatbot Scraper")
+st.write("Enter your query and get a summarized response from Wikipedia.")
+
+input_text = st.text_input("Enter your query:")
+
+if st.button("Get Summary"):
+    if input_text:
+        summary = get_summary(input_text)
+        st.write("\n".join(summary))
     else:
-        st.write(f"**Chatbot:** {message['content']}")
+        st.write("Please enter a query.")
