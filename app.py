@@ -5,10 +5,28 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 import spacy
 import pytextrank
+import subprocess
+
+# Check if NLTK punkt is downloaded, if not, download it
+try:
+    import nltk
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    subprocess.call("python -c \"import nltk; nltk.download('punkt')\"", shell=True)
+
+# Check if spaCy model is downloaded, if not, download it
+try:
+    import spacy
+    spacy.load('en_core_web_sm')
+except OSError:
+    subprocess.call("python -m spacy download en_core_web_sm", shell=True)
 
 # Load spaCy model and add PyTextRank to the pipeline
 nlp = spacy.load("en_core_web_sm")
-nlp.add_pipe("textrank")
+
+# Add PyTextRank to the spaCy pipeline
+tr = pytextrank.TextRank()
+nlp.add_pipe(tr.PipelineComponent, name="textrank", last=True)
 
 # Initialize Wikipedia API
 wiki_wiki = wikipediaapi.Wikipedia(
@@ -38,6 +56,9 @@ def get_summary(input_text):
         return ["The page does not exist."]
 
 # Streamlit app
+st.title("Interactive Chatbot")
+
+# Define a function to handle user input and display responses
 def chatbot_response(user_input):
     if user_input.strip() == "":
         return "Please enter a query."
