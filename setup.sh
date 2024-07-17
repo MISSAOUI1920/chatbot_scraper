@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Install system dependencies
+# Install system dependencie
 apt-get update
 apt-get install -y build-essential  # Ensure build tools are available
 
