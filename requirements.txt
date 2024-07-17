@@ -1,5 +1,6 @@
-streamlit 
-wikipedia-api 
-sumy 
-spacy 
+streamlit
+wikipedia-api
+sumy
+spacy
 pytextrank
+nltk
