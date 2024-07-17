@@ -2,12 +2,13 @@ import wikipediaapi
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
-import en_core_web_sm
+import spacy
 import pytextrank
 import streamlit as st  # Import Streamlit
 
 # Load a spaCy model
-nlp = en_core_web_sm.load()
+nlp = spacy.load("en_core_web_sm")
+
 # Add PyTextRank to the spaCy pipeline
 nlp.add_pipe("textrank")
 
