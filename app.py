@@ -38,14 +38,23 @@ def get_summary(input_text):
         return ["The page does not exist."]
 
 # Streamlit app
-st.title("Chatbot Scraper")
-st.write("Enter your query and get a summarized response from Wikipedia.")
+def chatbot_response(user_input):
+    if user_input.strip() == "":
+        return "Please enter a query."
 
-input_text = st.text_input("Enter your query:")
+    # Get the summary based on user input
+    summary = get_summary(user_input)
 
-if st.button("Get Summary"):
-    if input_text:
-        summary = get_summary(input_text)
-        st.write("\n".join(summary))
-    else:
-        st.write("Please enter a query.")
+    # Return the summary as a formatted string
+    return "\n".join(summary)
+
+# Input box for user query
+user_input = st.text_input("You: ", "")
+
+# Button to trigger the response
+if st.button("Ask"):
+    response = chatbot_response(user_input)
+    st.text_area("Chatbot:", value=response, height=150)
+
+# Instructions
+st.markdown("Ask a question and click 'Ask' to get a summarized response from Wikipedia.")
