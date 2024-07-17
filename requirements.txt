@@ -1,6 +1,6 @@
-spacy
+spacy==3.5.0
+pytextrank==3.0.0
 wikipedia-api
-pytextrank
 streamlit
 requests
 sumy
