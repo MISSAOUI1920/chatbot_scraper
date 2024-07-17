@@ -1,5 +1,4 @@
 wikipedia-api
 sumy
-en_core_web_sm
 pytextrank
 streamlit
