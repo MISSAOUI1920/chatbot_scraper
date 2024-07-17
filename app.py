@@ -5,13 +5,40 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 import spacy
 import pytextrank
+import requests
+import tarfile
+import os
+from pathlib import Path
+import nltk
 
-# Load spaCy model and add PyTextRank to the pipeline
-nlp = spacy.load("en_core_web_sm")
+nltk.download('punkt')
+# Function to download the spaCy model
+def download_spacy_model():
+    url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0.tar.gz"
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open("en_core_web_sm.tar.gz", "wb") as f:
+            f.write(response.raw.read())
+
+        with tarfile.open("en_core_web_sm.tar.gz", "r:gz") as tar:
+            tar.extractall()
+        
+        model_path = Path("en_core_web_sm-3.5.0/en_core_web_sm/en_core_web_sm-3.5.0")
+        return model_path
+    else:
+        raise Exception("Failed to download spaCy model")
+
+# Check if the model is already downloaded
+model_path = Path("en_core_web_sm-3.5.0/en_core_web_sm/en_core_web_sm-3.5.0")
+
+if not model_path.exists():
+    model_path = download_spacy_model()
+
+# Load the spaCy model
+nlp = spacy.load(model_path)
 
 # Add PyTextRank to the spaCy pipeline
-tr = pytextrank.TextRank()
-nlp.add_pipe(tr.PipelineComponent, name="textrank", last=True)
+nlp.add_pipe("textrank", last=True)
 
 # Initialize Wikipedia API
 wiki_wiki = wikipediaapi.Wikipedia(
